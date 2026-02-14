@@ -1,0 +1,19 @@
+# Node
+node_modules
+dist
+build
+
+# IntelliJ
+.idea
+*.iml
+
+# VSCode
+.vscode
+
+# Logs
+*.log
+
+# OS
+.DS_Store
+
+DailySpring-backend/target/

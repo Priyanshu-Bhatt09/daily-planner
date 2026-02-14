@@ -1,0 +1,45 @@
+@import "tailwindcss";
+.pixel-font {
+    font-family: 'Press Start 2P', cursive;
+}
+.title-font {
+    font-family: "Jersey 10", sans-serif;
+  font-weight: 400;
+  font-style: normal;
+}
+
+.plan-font {
+    font-family: "Jersey 15", sans-serif;
+  font-weight: 400;
+  font-style: normal;
+}
+
+/* this is for scrollbar css */
+@layer utilities {
+    .scrollbar-thin {
+        scrollbar-width: thin;
+    }
+
+    .scrollbar-thumb {
+        scrollbar-color: #F075AE transparent;
+    }
+
+    .scrollbar::-webkit-scrollbar {
+        width: 10px;
+    }
+
+    .scrollbar::-webkit-scrollbar-track {
+        background: #F0FFDF;
+    }
+
+    .scrollbar::-webkit-scrollbar-thumb {
+        background-color: #F0FFDF;
+        border: 2px solid black;
+    }
+
+    .scrollbar::-webkit-scrollbar-thumb:hover {
+        background-color: #F075AE;
+    }
+
+
+}
