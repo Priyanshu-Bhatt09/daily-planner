@@ -14,7 +14,9 @@ public class CorsConfig {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/**") //apply to all endpoints
-                        .allowedOrigins("https://momentum-eosin.vercel.app") //vercel url
+                        .allowedOrigins(
+                                "http://localhost:5173",
+                                "https://momentum-eosin.vercel.app") //vercel url
                         .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH") //ALLOW ALL ACTIONS
                         .allowedHeaders("*")
                         .allowCredentials(true);
