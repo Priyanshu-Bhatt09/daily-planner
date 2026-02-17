@@ -12,7 +12,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api/daily")
-@CrossOrigin(origins = "https://momentum-eosin.vercel.app")
+//@CrossOrigin(origins = "https://momentum-eosin.vercel.app")
 public class PlanController {
     private final PlanService service;
     public PlanController(PlanService service) {
