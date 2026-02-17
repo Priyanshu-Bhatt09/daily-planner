@@ -16,6 +16,8 @@ import { PiCellSignalLow } from "react-icons/pi";
 import { PiExclamationMark } from "react-icons/pi";
 import { Dropdown } from "./Components/Dropdown";
 
+
+
 interface Items {
   id: number;
   title: string;
@@ -25,6 +27,8 @@ interface Items {
 }
 
 function App() {
+
+  const BASE_URL = import.meta.env.VITE_API_URL;
   const [isOpen, setIsOpen] = useState<boolean>(false); //this is for opening and closing functioning of CreatePlan
   //these are used to fetch lists
   const [item, setItem] = useState<Items[]>([]); //Items[] stores all the plans or we can say TITLE of those plans
@@ -38,7 +42,7 @@ function App() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await fetch("http://localhost:8080/api/daily/items");//this api fetches all the titles
+        const res = await fetch(`${BASE_URL}/api/daily/items`);//this api fetches all the titles
         const data = await res.json();
         setItem(data);
       }
@@ -51,7 +55,7 @@ function App() {
   }, []);
 
   const handleTitleClick = async (id: number) => {
-    const res = await fetch(`http://localhost:8080/api/daily/fetchAll/${id}`); //this api fetches all the titel and body of a plan by using its id number
+    const res = await fetch(`${BASE_URL}/api/daily/fetchAll/${id}`); //this api fetches all the titel and body of a plan by using its id number
     const fullData = await res.json();
     setActiveItem(fullData);
     setIsOpen(true);
@@ -60,7 +64,7 @@ function App() {
 
   const handleDelete = async (id: number) => {
     try {
-      const res = await fetch(`http://localhost:8080/api/daily/deletePlan/${id}`, {
+      const res = await fetch(`${BASE_URL}/api/daily/deletePlan/${id}`, {
         method: "DELETE",
         headers: { "Content-Type": "application/json" }
       })
@@ -97,7 +101,7 @@ function App() {
   // const [priority, setPriority] = useState<string>("");
   //this is for updating the status while showing the plans
   const updateStatus = async(id: number, newStatus: string) => {
-    const res = await fetch(`http://localhost:8080/api/daily/${id}/status`, {
+    const res = await fetch(`${BASE_URL}/api/daily/${id}/status`, {
       method: "PATCH",
       headers: {"Content-Type" : "application/json"},
       body: JSON.stringify({status : newStatus}),
@@ -110,7 +114,7 @@ function App() {
     }
   }
   const updatePriority = async(id: number, newPriority: string) => {
-    const res = await fetch(`http://localhost:8080/api/daily/${id}/priority`, {
+    const res = await fetch(`${BASE_URL}/api/daily/${id}/priority`, {
       method: "PATCH",
       headers: {"Content-Type": "application/json"},
       body: JSON.stringify({priority: newPriority}),

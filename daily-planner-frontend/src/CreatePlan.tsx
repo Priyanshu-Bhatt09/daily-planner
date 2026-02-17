@@ -31,6 +31,9 @@ interface CreatePlanProps {
 
 function CreatePlan(
     { onClose, onSave, activeItem }: CreatePlanProps) {
+
+    const BASE_URL = import.meta.env.VITE_API_URL;
+    
     useEffect(() => {
         if (activeItem) { //if activeItem is not null, that means we are in editing mode
             setTitle(activeItem.title); //so we set the title of the already existed plan, by using activeItem.title
@@ -167,8 +170,8 @@ function CreatePlan(
         }
 
         const isEdit = activeItem !== null;
-        const url = isEdit ? `http://localhost:8080/api/daily/${activeItem.id}`
-            : `http://localhost:8080/api/daily/save`;
+        const url = isEdit ? `${BASE_URL}/api/daily/${activeItem.id}`
+            : `${BASE_URL}/api/daily/save`;
         const res = await fetch(url, {
             method: isEdit ? "PUT" : "POST",
             headers: { "Content-Type": "application/json" },
