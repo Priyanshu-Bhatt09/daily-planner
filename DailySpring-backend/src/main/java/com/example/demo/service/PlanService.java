@@ -7,6 +7,7 @@ import com.example.demo.repository.PlanRepo;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -107,5 +108,13 @@ public class PlanService {
 
     public void delPlan(Long id) {
         repo.deleteById(id);
+    }
+
+    public List<LocalDate> getCompletedDates() {
+        return repo.findAll()
+                .stream()
+                .filter(p -> "Done".equals(p.getStatus()))
+                .map(p -> p.getCreatedAt().toLocalDate())
+                .toList();
     }
 }

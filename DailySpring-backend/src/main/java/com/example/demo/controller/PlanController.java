@@ -6,6 +6,7 @@ import com.example.demo.entity.PlanEntity;
 import com.example.demo.service.PlanService;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 
@@ -71,5 +72,10 @@ public class PlanController {
     @DeleteMapping("/deletePlan/{id}")
     public void delPlan(@PathVariable Long id) {
         service.delPlan(id);
+    }
+
+    @GetMapping("/completed-dates")
+    public List<LocalDate> getCompletedDates() {
+        return service.getCompletedDates();
     }
 }
