@@ -16,6 +16,8 @@ import { PiCellSignalLow } from "react-icons/pi";
 import { PiExclamationMark } from "react-icons/pi";
 import { Dropdown } from "./Components/Dropdown";
 
+//github icon
+import { FaGithub } from "react-icons/fa";
 
 
 interface Items {
@@ -37,6 +39,86 @@ function App() {
 
   //this state is for showing alerts
   const [deleteId, setDeleteId] = useState<number | null>(null);
+
+  //get completed dates for streak
+  const [completedDates, setCompletedDates] = useState<string[]>([]);
+
+  //fetch the dates
+  useEffect(() => {
+    const fetchDates = async() => {
+      try {
+        const res = await fetch(`${BASE_URL}/api/daily/completed-dates`);
+        const data = await res.json();
+        setCompletedDates(data);
+      } catch(error) {
+        console.error("Failed to fetch dates", error);
+      }
+    };
+    fetchDates();
+  }, []);
+
+  //generate the last 90 days grid
+  const generateDays = () => {
+    const days = [];
+    const today = new Date();
+
+    for(let i = 89; i >= 0; i--) {
+      const d = new Date();
+      d.setDate(today.getDate() - i); //this goes to the last 90 days
+      days.push(d.toISOString().split("T")[0]); //this only pushes the date not time, time got spilted as - split("T")
+
+    }
+    return days;
+  };
+
+  const days = generateDays();
+
+  //generate weeks
+  const weeks: string[][] = [];
+
+  for(let i = 0; i < days.length; i += 7) {
+    weeks.push(days.slice(i, i+7));
+  }
+
+  //month labels - if it is the first week of that month
+  
+
+  //count how many tasks done in one day
+  const countByDate = completedDates.reduce((acc, date) => { //reduce -> takes an array and reduces it to single value - in this case a single object
+    //acc -> accumulator - stores running total, it starts as an empty object {} that is provided at the very end of the function
+    acc[date] = (acc[date] || 0) + 1; //acc[date] -> looks inside the accumulator object for the current date, if the date isn't object yet it defaults it to 0 or add +1 to whatever num it just found
+    return acc; //reduce requires you to hand the updated accumulator back at the end of every loop iteration so it can be used in the next loop
+  }, {} as Record<string, number>); //this empty object is going to be filled with dates and its count
+
+  //calculate streak
+  const calculateStreak = () => {
+    let streak = 0;
+    const today = new Date();
+    for(let i = 0; ; i++) {
+      const d = new Date();
+      d.setDate(today.getDate() - i);
+      const dateStr = d.toISOString().split("T")[0];
+
+      if(countByDate[dateStr]) {
+        streak++;
+      } else {
+        break;
+      }
+    }
+    return streak;
+  }
+
+  const currentStreak = calculateStreak();
+
+  //getcolors function
+  const getColor = (count: number) => {
+    if(count === 0) return "bg-gray-200";
+    if(count === 1) return "bg-green-300";
+    if(count === 2) return "bg-green-400";
+    if(count === 3) return "bg-green-500";
+
+    return "bg-green-700";
+  };
 
   //fetch the data
   useEffect(() => {
@@ -131,12 +213,12 @@ function App() {
 
   return (
     <>
-      <div className="border-2 min-h-screen bg-[#DDAED3] flex flex-col justify-start items-center gap-4"
+      <div className="border-2 min-h-screen bg-[#DDAED3] flex" //flex-row justify-start items-center gap-4
       >
-
-        <div className=" w-70 flex flex-col items-center m-2 ">
+        {/* SIDEBAR  */}
+        <div className="w-[20vw] flex flex-col items-center m-2 border-2 gap-2">
           {/* <h3 className="pixel-font">Create Plan</h3> */}
-          <button className="border-4 border-black w-full pixel-font
+          <button className="border-4 border-black w-full plan-font text-2xl
       flex items-center gap-4 p-1
       bg-[#FBEF76]
       hover:translate-x-0.5 hover:translate-y-0.5
@@ -149,14 +231,39 @@ function App() {
             <BsPlusSquareDotted size={30} />
             Create Plan
           </button>
+          <button className="border-4 border-black w-full plan-font text-2xl
+      flex items-center gap-4 p-1
+      bg-[#FBEF76]
+      hover:translate-x-0.5 hover:translate-y-0.5">All Plans</button>
+          <button className="border-4 border-black w-full plan-font text-2xl
+      flex items-center gap-4 p-1
+      bg-[#FBEF76]
+      hover:translate-x-0.5 hover:translate-y-0.5">In Progress</button>
+
+      <div className="border-2 flex flex-1 w-full items-end justify-center">
+
+        <button className="mb-2">
+        <FaGithub size={30}/>
+      </button>
+      </div>
+      
+        </div>
+
+        <div className="flex flex-col border-4 w-[60vw] h-[98vh] m-2">
+        {/* TOPBAR  */}
+        <div className="flex flex-row border-2 h-fit w-90 m-2 gap-4">
+            <button className="border-2 p-1">Active</button>
+            <button className="border-2 p-1">Completed</button>
+            <button className="border-2 p-1">Backlog</button>
+            <button className="border-2 p-1">Priority</button>
         </div>
 
         {/* List of Plans */}
         <div className="border-2 flex justify-start 
-      w-full sm:w-3/4 md:w-1/2 lg:w-1/3
+      w-full sm:w-3/4 md:w-1/2 lg:w-full
       h-[80vh] lg:h-132 sm:h-[80vh] md:h-[80vh]
       overflow-y-auto scrollbar scrollbar-thin scrollbar-thumb
-      mt-20 lg:mt-12 sm:mt-12 md:mt-12
+      mx-2
       ">
 
           <div className="divide-y p-1 w-full m-2">
@@ -262,6 +369,27 @@ function App() {
                   </div>
             )}
           </div>
+        </div>
+        <div className="mt-4">
+          Current Streak : {currentStreak} days
+        </div>
+        <div className="overflow-x-auto">
+        <div className="grid grid-flow-col grid-rows-7 gap-2  border-2">
+          {days.map((dateObj) => {
+            const dateStr = dateObj;
+            const count = countByDate[dateStr] || 0;
+
+            return(
+              <div
+              key={dateStr}
+              className={`w-4 h-4 ${getColor(count)} transition hover:scale-110`}
+              title={`${dateStr} - ${count} plans`}
+              >
+              </div>
+            )
+          })}
+        </div>
+        </div>
         </div>
 
         {/* if isOpen is true then show Create plan, if isOpen false then don't show Create plan
