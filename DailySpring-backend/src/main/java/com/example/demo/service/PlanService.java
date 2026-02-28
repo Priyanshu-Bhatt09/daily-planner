@@ -24,7 +24,7 @@ public class PlanService {
         entity.setStatus(status);
         entity.setPriority(priority);
         entity.setCompleted("Done".equals(status));
-        entity.setCreatedAt(LocalDateTime.now());
+        entity.setCreatedAt(LocalDate.now());
 
         return repo.save(entity);
     }
@@ -89,7 +89,7 @@ public class PlanService {
         existing.setPriority(dto.getPriority());
 
         existing.setCompleted("Done".equals(dto.getStatus()));
-        existing.setCreatedAt(LocalDateTime.now());
+        existing.setCreatedAt(LocalDate.now());
 
         return repo.save(existing);
     }
@@ -114,7 +114,7 @@ public class PlanService {
         return repo.findAll()
                 .stream()
                 .filter(p -> "Done".equals(p.getStatus()))
-                .map(p -> p.getCreatedAt().toLocalDate())
+                .map(PlanEntity::getCreatedAt)
                 .toList();
     }
 }

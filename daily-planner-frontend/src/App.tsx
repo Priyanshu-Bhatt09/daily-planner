@@ -43,6 +43,13 @@ function App() {
   //get completed dates for streak
   const [completedDates, setCompletedDates] = useState<string[]>([]);
 
+  //fun to convert date to local Date from backend
+  // const formatLocalDate = (date: Date) => {
+  //   return date.getFullYear() + "-" +
+  //   String(date.getMonth() + 1).padStart(2, "0") + "-" +
+  //   String(date.getDate()).padStart(2, "0");
+  // }
+
   //fetch the dates
   useEffect(() => {
     const fetchDates = async() => {
@@ -57,12 +64,12 @@ function App() {
     fetchDates();
   }, []);
 
-  //generate the last 90 days grid
+  //generate the last 180 days grid
   const generateDays = () => {
     const days = [];
     const today = new Date();
 
-    for(let i = 89; i >= 0; i--) {
+    for(let i = 179; i >= 0; i--) {
       const d = new Date();
       d.setDate(today.getDate() - i); //this goes to the last 90 days
       days.push(d.toISOString().split("T")[0]); //this only pushes the date not time, time got spilted as - split("T")
@@ -74,13 +81,45 @@ function App() {
   const days = generateDays();
 
   //generate weeks
-  const weeks: string[][] = [];
+  // const weeks: string[][] = [];
 
-  for(let i = 0; i < days.length; i += 7) {
-    weeks.push(days.slice(i, i+7));
-  }
+  // for(let i = 0; i < days.length; i += 7) {
+  //   weeks.push(days.slice(i, i+7));
+  // }
+
+  const groupByMonth = (days: Date[]) => {
+    const months: Record<string, Date[]> = {}; //we creating an empty object that will hold our final grouped data of string and date like - {"feb 2026", [Feb 24]}, 
+    //we use Record - to create a dictionary or a hash map or lookup table with key and value pair
+
+    days.forEach(date => {
+      const monthKey = date.toLocaleString("default", {month : "short", year : "numeric"}); //we take the date and create it to something like this - Dec 2026
+
+      if(!months[monthKey]) { //if it dosen't have the key like - !months["Feb 2026"]
+        months[monthKey] = []; //then create an empty array like - months["Feb 2026"] = []
+      }
+      months[monthKey].push(date); //then we push the value or date - months["Feb 2026"] = [Feb 24]
+    });
+    return months;
+  };
+
+  const monthsData = groupByMonth(days.map(dateString => new Date(dateString)));
 
   //month labels - if it is the first week of that month
+  // const formatter = new Intl.DateTimeFormat("Default", { month: "short"});
+  // const monthLabels = weeks.map((week) => {
+  //   const firstDay = new Date(week[0]);
+  //   return formatter.format(firstDay);
+  // });
+
+  // //but we don't want duplicate month names for every week
+  // let lastMonth = "";
+  // const clearMonthLabels = monthLabels.map((month) => {
+  //   if(month !== lastMonth) { //this is the logic if it is the first week of the month
+  //     lastMonth = month; 
+  //     return month;
+  //   }
+  //   return ""; //if it is not the first week then the lastmonth name is same as the current month so return an empty string
+  // })
   
 
   //count how many tasks done in one day
@@ -213,10 +252,11 @@ function App() {
 
   return (
     <>
-      <div className="border-2 min-h-screen bg-[#DDAED3] flex" //flex-row justify-start items-center gap-4
+      <div className="border-2 min-h-screen bg-[#DDAED3] flex items-center justify-center" //flex-row justify-start items-center gap-4
       >
+        {/* <div className="border-2"> */}
         {/* SIDEBAR  */}
-        <div className="w-[20vw] flex flex-col items-center m-2 border-2 gap-2">
+        <div className="w-[20vw] h-[98vh] flex flex-col items-center m-2 p-2 border-2 gap-2">
           {/* <h3 className="pixel-font">Create Plan</h3> */}
           <button className="border-4 border-black w-full plan-font text-2xl
       flex items-center gap-4 p-1
@@ -233,11 +273,11 @@ function App() {
           </button>
           <button className="border-4 border-black w-full plan-font text-2xl
       flex items-center gap-4 p-1
-      bg-[#FBEF76]
+      bg-[#fb7676]
       hover:translate-x-0.5 hover:translate-y-0.5">All Plans</button>
           <button className="border-4 border-black w-full plan-font text-2xl
       flex items-center gap-4 p-1
-      bg-[#FBEF76]
+      bg-[#fb7676]
       hover:translate-x-0.5 hover:translate-y-0.5">In Progress</button>
 
       <div className="border-2 flex flex-1 w-full items-end justify-center">
@@ -247,11 +287,11 @@ function App() {
       </button>
       </div>
       
-        </div>
+      </div>
 
-        <div className="flex flex-col border-4 w-[60vw] h-[98vh] m-2">
+      <div className="flex flex-col border-4 w-[60vw] h-[98vh] p-2">
         {/* TOPBAR  */}
-        <div className="flex flex-row border-2 h-fit w-90 m-2 gap-4">
+        <div className="flex flex-row border-2 h-fit w-full p-2  gap-4">
             <button className="border-2 p-1">Active</button>
             <button className="border-2 p-1">Completed</button>
             <button className="border-2 p-1">Backlog</button>
@@ -259,17 +299,29 @@ function App() {
         </div>
 
         {/* List of Plans */}
-        <div className="border-2 flex justify-start 
+        <div className=" flex justify-start 
       w-full sm:w-3/4 md:w-1/2 lg:w-full
-      h-[80vh] lg:h-132 sm:h-[80vh] md:h-[80vh]
+      h-[80vh] lg:h-90 sm:h-[80vh] md:h-[80vh]
       overflow-y-auto scrollbar scrollbar-thin scrollbar-thumb
-      mx-2
+       my-2
       ">
 
-          <div className="divide-y p-1 w-full m-2">
+          <div className="divide-y p-1 w-full  border-2 ">
             {item.length === 0 ? (
-              <div className="text-xl pixel-font">
-                No Plans yet
+              <div className="flex justify-center items-center ">
+                <button className="border-4 border-black w-full plan-font text-2xl
+      flex items-center gap-4 p-1
+      bg-[#FBEF76]
+      hover:translate-x-0.5 hover:translate-y-0.5
+      "
+            onClick={() => {
+              setActiveItem(null);
+              setIsOpen(true)
+            }}
+          >
+            <BsPlusSquareDotted size={30} />
+            Create Plan
+          </button>
               </div>
             ) : (
               activePlans.map((n) => {
@@ -370,11 +422,45 @@ function App() {
             )}
           </div>
         </div>
-        <div className="mt-4">
+
+
+        {/* streak section  */}
+        <div className="">
           Current Streak : {currentStreak} days
         </div>
-        <div className="overflow-x-auto">
-        <div className="grid grid-flow-col grid-rows-7 gap-2  border-2">
+        <div className="flex gap-8 overflow-x-auto border-2 w-full p-2 my-2 justify-center">
+          {Object.entries(monthsData).map(([monthName, monthDays]) => (
+            <div key={monthName}>
+
+              {/* month label  */}
+              <div className="mb-2 text-sm font-semibold">
+                {monthName}
+              </div>
+
+              {/* month grid  */}
+              <div
+              className="grid grid-flow-col grid-rows-7 gap-2 auto-cols-[16px]"
+              >
+                {monthDays.map((dateObj) => {
+                  const dateStr = dateObj.toISOString().split("T")[0];
+                  const count = countByDate[dateStr] || 0;
+
+                  return(
+                    <div
+                    key={dateStr}
+                    className={`w-4 h-4 rounded-sm ${getColor(count)} `}
+                    title={`${dateStr} - ${count} plans`}
+                    >
+                    </div>
+                  )
+                })}
+              </div>
+            </div>
+          ))}
+
+        
+
+        {/* <div className="grid grid-flow-col auto-cols-[16px] grid-rows-7 gap-1 h-[25vh] m-2">
           {days.map((dateObj) => {
             const dateStr = dateObj;
             const count = countByDate[dateStr] || 0;
@@ -382,13 +468,13 @@ function App() {
             return(
               <div
               key={dateStr}
-              className={`w-4 h-4 ${getColor(count)} transition hover:scale-110`}
+              className={`w-4 h-4 ${getColor(count)} transition hover:scale-110 `}
               title={`${dateStr} - ${count} plans`}
               >
               </div>
             )
           })}
-        </div>
+        </div> */}
         </div>
         </div>
 
@@ -425,7 +511,8 @@ function App() {
           </div>
 
         )}
-      </div>
+        </div>
+      {/* </div> */}
     </>
   )
 }

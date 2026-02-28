@@ -3,6 +3,7 @@ package com.example.demo.entity;
 import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
@@ -20,7 +21,7 @@ public class PlanEntity {
 
     @CreationTimestamp
     @Column(updatable = false)
-    private LocalDateTime createdAt;
+    private LocalDate createdAt;
 
     public PlanEntity(){}
     public PlanEntity(String title, String plan, String status, String priority, Boolean completed){
@@ -29,13 +30,13 @@ public class PlanEntity {
         this.status = status;
         this.priority = priority;
         this.completed = completed;
-        this.createdAt = LocalDateTime.now();
+        this.createdAt = LocalDate.now();
     }
 
     public Long getId(){ return id; }
     public String getPlan() { return plan; }
     public String getTitle() { return title; }
-    public LocalDateTime getCreatedAt() { return createdAt; }
+    public LocalDate getCreatedAt() { return createdAt; }
 
     public String getStatus() {
         return status;
@@ -73,7 +74,7 @@ public class PlanEntity {
         this.plan = plan;
     }
 
-    public void setCreatedAt(LocalDateTime createdAt) {
+    public void setCreatedAt(LocalDate createdAt) {
         this.createdAt = createdAt;
     }
 }
