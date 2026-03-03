@@ -292,10 +292,10 @@ function App() {
       <div className="flex flex-col border-4 w-[60vw] h-[98vh] p-2">
         {/* TOPBAR  */}
         <div className="flex flex-row border-2 h-fit w-full p-2  gap-4">
-            <button className="border-2 p-1">Active</button>
-            <button className="border-2 p-1">Completed</button>
-            <button className="border-2 p-1">Backlog</button>
-            <button className="border-2 p-1">Priority</button>
+            <button className="border-3 p-1 plan-font text-2xl bg-[#fb7676]">Active</button>
+            <button className="border-3 p-1 plan-font text-2xl bg-[#fb7676]">Completed</button>
+            <button className="border-3 p-1 plan-font text-2xl bg-[#fb7676]">Backlog</button>
+            <button className="border-3 p-1 plan-font text-2xl bg-[#fb7676]">Priority</button>
         </div>
 
         {/* List of Plans */}
@@ -425,7 +425,7 @@ function App() {
 
 
         {/* streak section  */}
-        <div className="">
+        <div className="text-2xl title-font ">
           Current Streak : {currentStreak} days
         </div>
         <div className="flex gap-8 overflow-x-auto border-2 w-full p-2 my-2 justify-center">
@@ -433,13 +433,13 @@ function App() {
             <div key={monthName}>
 
               {/* month label  */}
-              <div className="mb-2 text-sm font-semibold">
+              <div className="mb-2  font-semibold title-font">
                 {monthName}
               </div>
 
               {/* month grid  */}
               <div
-              className="grid grid-flow-col grid-rows-7 gap-2 auto-cols-[16px]"
+              className="grid grid-flow-col grid-rows-7 gap-2 auto-cols-[12px]"
               >
                 {monthDays.map((dateObj) => {
                   const dateStr = dateObj.toISOString().split("T")[0];
@@ -448,7 +448,7 @@ function App() {
                   return(
                     <div
                     key={dateStr}
-                    className={`w-4 h-4 rounded-sm ${getColor(count)} `}
+                    className={`w-3 h-3 rounded-sm ${getColor(count)} `}
                     title={`${dateStr} - ${count} plans`}
                     >
                     </div>

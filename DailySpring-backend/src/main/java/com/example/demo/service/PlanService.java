@@ -114,7 +114,7 @@ public class PlanService {
         return repo.findAll()
                 .stream()
                 .filter(p -> "Done".equals(p.getStatus()))
-                .map(PlanEntity::getCreatedAt)
+                .map(PlanEntity::getCompletedAt)
                 .toList();
     }
 }

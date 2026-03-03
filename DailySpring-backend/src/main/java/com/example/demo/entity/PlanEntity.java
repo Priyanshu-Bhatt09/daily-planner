@@ -23,6 +23,8 @@ public class PlanEntity {
     @Column(updatable = false)
     private LocalDate createdAt;
 
+    private LocalDate completedAt;
+
     public PlanEntity(){}
     public PlanEntity(String title, String plan, String status, String priority, Boolean completed){
         this.title = title;
@@ -31,6 +33,19 @@ public class PlanEntity {
         this.priority = priority;
         this.completed = completed;
         this.createdAt = LocalDate.now();
+        this.completedAt = LocalDate.now();
+    }
+
+    public LocalDate getCompletedAt() {
+        return completedAt;
+    }
+
+    public void setCompletedAt(LocalDate completedAt) {
+        this.completedAt = completedAt;
+    }
+
+    public Boolean getCompleted() {
+        return completed;
     }
 
     public Long getId(){ return id; }
