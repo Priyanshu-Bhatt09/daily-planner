@@ -19,6 +19,7 @@ import { Dropdown } from "./Components/Dropdown";
 //github icon
 import { FaGithub } from "react-icons/fa";
 
+type Priority = "High" | "Medium" | "Urgent" | "Low";
 
 interface Items {
   id: number;
@@ -250,6 +251,34 @@ function App() {
   const activePlans = item.filter(i => i.status !== "Done");
   const completedPlans = item.filter(i => i.status === "Done");
 
+  const[filter, setFilter] = useState<"all" | "active" | "completed" | "backlog" | "in-progress">("all");
+
+  const filteredItems = item.filter(i => {
+    if(filter === "active") {
+      return i.status !== "Done";
+    }
+
+    if(filter === "completed") {
+      return i.status === "Done";
+    }
+
+    if(filter === "backlog") {
+      return i.status === "Backlog";
+    }
+
+    if(filter === "in-progress") {
+      return i.status === "In Progress"
+    }
+
+    // if(filter === "priority") {
+    //   return [...item].sort((a, b) => {
+    //     const priorityOrder = {High: 1, Medium: 2, Low: 3, Urgent: 0};
+    //     return priorityOrder[a.priority] - priorityOrder[b.priority];
+    //   })
+    // }
+    return true; //for all the plans
+  })
+
   return (
     <>
       <div className="border-2 min-h-screen bg-[#DDAED3] flex items-center justify-center" //flex-row justify-start items-center gap-4
@@ -271,14 +300,18 @@ function App() {
             <BsPlusSquareDotted size={30} />
             Create Plan
           </button>
-          <button className="border-4 border-black w-full plan-font text-2xl
+          <button
+          onClick={() => setFilter("all")}
+          className={`border-4 border-black w-full plan-font text-2xl
       flex items-center gap-4 p-1
-      bg-[#fb7676]
-      hover:translate-x-0.5 hover:translate-y-0.5">All Plans</button>
-          <button className="border-4 border-black w-full plan-font text-2xl
+      ${filter === "all" ? "bg-[#fb7676]": "bg-[#F075AE]"}
+      hover:translate-x-0.5 hover:translate-y-0.5`}>All Plans</button>
+          <button 
+          onClick={() => setFilter("in-progress")}
+          className={`border-4 border-black w-full plan-font text-2xl
       flex items-center gap-4 p-1
-      bg-[#fb7676]
-      hover:translate-x-0.5 hover:translate-y-0.5">In Progress</button>
+      ${filter === "in-progress" ? "bg-[#fb7676]": "bg-[#F075AE]"}
+      hover:translate-x-0.5 hover:translate-y-0.5`}>In Progress</button>
 
       <div className="border-2 flex flex-1 w-full items-end justify-center">
 
@@ -292,10 +325,18 @@ function App() {
       <div className="flex flex-col border-4 w-[60vw] h-[98vh] p-2">
         {/* TOPBAR  */}
         <div className="flex flex-row border-2 h-fit w-full p-2  gap-4">
-            <button className="border-3 p-1 plan-font text-2xl bg-[#fb7676]">Active</button>
-            <button className="border-3 p-1 plan-font text-2xl bg-[#fb7676]">Completed</button>
-            <button className="border-3 p-1 plan-font text-2xl bg-[#fb7676]">Backlog</button>
-            <button className="border-3 p-1 plan-font text-2xl bg-[#fb7676]">Priority</button>
+            <button 
+            onClick={() => setFilter("active")}
+            className={`border-3 p-1 plan-font text-2xl ${filter === "active" ? "bg-[#fb7676]": "bg-[#F075AE]"}`}>Active</button>
+            <button 
+            onClick={() => setFilter("completed")}
+            className={`border-3 p-1 plan-font text-2xl ${filter === "completed" ? "bg-[#fb7676]": "bg-[#F075AE]"}`}>Completed</button>
+            <button 
+            onClick={() => setFilter("backlog")}
+            className={`border-3 p-1 plan-font text-2xl ${filter === "backlog" ? "bg-[#fb7676]": "bg-[#F075AE]"}`}>Backlog</button>
+            <button 
+            
+            className={`border-3 p-1 plan-font text-2xl ${filter === "completed" ? "bg-[#fb7676]": "bg-[#F075AE]"}`}>Priority</button>
         </div>
 
         {/* List of Plans */}
@@ -324,7 +365,7 @@ function App() {
           </button>
               </div>
             ) : (
-              activePlans.map((n) => {
+              filteredItems.map((n) => {
                 
                 // console.log("Current item data ", n);
                 return (
