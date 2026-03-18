@@ -19,7 +19,7 @@ import { Dropdown } from "./Components/Dropdown";
 //github icon
 import { FaGithub } from "react-icons/fa";
 
-type Priority = "High" | "Medium" | "Urgent" | "Low";
+// type Priority = "High" | "Medium" | "Urgent" | "Low";
 
 interface Items {
   id: number;
@@ -248,7 +248,7 @@ const [isOpen, setIsOpen] = useState<boolean>(false); //this is for opening and 
     }
   }
 
-  const activePlans = item.filter(i => i.status !== "Done");
+  // const activePlans = item.filter(i => i.status !== "Done");
   const completedPlans = item.filter(i => i.status === "Done");
 
   const[filter, setFilter] = useState<"all" | "active" | "completed" | "backlog" | "in-progress">("all");
