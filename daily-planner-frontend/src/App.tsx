@@ -31,8 +31,8 @@ interface Items {
 
 function App() {
 
-  const BASE_URL = import.meta.env.VITE_API_URL;
-  const [isOpen, setIsOpen] = useState<boolean>(false); //this is for opening and closing functioning of CreatePlan
+const BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:8080";
+const [isOpen, setIsOpen] = useState<boolean>(false); //this is for opening and closing functioning of CreatePlan
   //these are used to fetch lists
   const [item, setItem] = useState<Items[]>([]); //Items[] stores all the plans or we can say TITLE of those plans
   const [activeItem, setActiveItem] = useState<Items | null>(null); //if active item is null - then we are creating a brand new plan
@@ -316,7 +316,9 @@ function App() {
       <div className="border-2 flex flex-1 w-full items-end justify-center">
 
         <button className="mb-2">
+          <a href="https://github.com/Priyanshu-Bhatt09/daily-planner" target="_blank" rel="noopener noreferrer">
         <FaGithub size={30}/>
+        </a>
       </button>
       </div>
       

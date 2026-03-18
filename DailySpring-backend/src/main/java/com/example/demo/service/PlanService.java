@@ -33,8 +33,16 @@ public class PlanService {
         PlanEntity plan = repo.findById(id)
                 .orElseThrow(() -> new RuntimeException("Status not found"));
         plan.setStatus(status);
-        plan.setCompleted("Done".equals(status));
-
+        if("Done".equals(status)) {
+            plan.setCompleted(true);
+            if(plan.getCompletedAt() == null) {
+                plan.setCompletedAt(LocalDate.now());
+            }
+        } else {
+            plan.setCompleted(false);
+            plan.setCompletedAt(null);
+        }
+        System.out.println("STATUS UPDATE TRIGGERED");
         return repo.save(plan);
     }
 
@@ -88,9 +96,17 @@ public class PlanService {
         existing.setStatus(dto.getStatus());
         existing.setPriority(dto.getPriority());
 
-        existing.setCompleted("Done".equals(dto.getStatus()));
-        existing.setCreatedAt(LocalDate.now());
 
+//        existing.setCreatedAt(LocalDate.now());
+        if("Done".equals(dto.getStatus()) ){
+            existing.setCompleted(true);
+            if(existing.getCompletedAt() == null) {
+                existing.setCompletedAt(LocalDate.now());
+            }
+        } else {
+            existing.setCompleted(false);
+            existing.setCompletedAt(null);
+        }
         return repo.save(existing);
     }
 
@@ -113,7 +129,8 @@ public class PlanService {
     public List<LocalDate> getCompletedDates() {
         return repo.findAll()
                 .stream()
-                .filter(p -> "Done".equals(p.getStatus()))
+//                .filter(p -> "Done".equals(p.getStatus()))
+                .filter(p -> p.getCompletedAt() != null)
                 .map(PlanEntity::getCompletedAt)
                 .toList();
     }
